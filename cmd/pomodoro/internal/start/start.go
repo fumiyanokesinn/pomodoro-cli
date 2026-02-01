@@ -56,10 +56,11 @@ func handleKeyInput(t *timer.Timer, cfg *config.Config, key ui.KeyEvent) bool {
 	state := t.State()
 	switch key {
 	case ui.KeySpace:
-		if state.TimerState == timer.StateRunning {
+		switch state.TimerState {
+		case timer.StateRunning:
 			t.Pause()
 			ui.ShowPaused()
-		} else if state.TimerState == timer.StatePaused {
+		case timer.StatePaused:
 			t.Resume()
 			ui.ShowResumed()
 		}

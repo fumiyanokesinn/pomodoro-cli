@@ -105,7 +105,9 @@ func TestSaveAndLoadで設定を永続化できる(t *testing.T) {
 func TestLoadはファイルから設定を読み込む(t *testing.T) {
 	tmpDir := t.TempDir()
 	configDir := filepath.Join(tmpDir, ".config", "pomodoro")
-	os.MkdirAll(configDir, 0755)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		t.Fatalf("os.MkdirAll() error = %v", err)
+	}
 	configPath := filepath.Join(configDir, "config.json")
 
 	cfg := &Config{
@@ -119,11 +121,17 @@ func TestLoadはファイルから設定を読み込む(t *testing.T) {
 		NotifyEnabled:      false,
 	}
 	data, _ := json.MarshalIndent(cfg, "", "  ")
-	os.WriteFile(configPath, data, 0644)
+	if err := os.WriteFile(configPath, data, 0644); err != nil {
+		t.Fatalf("os.WriteFile() error = %v", err)
+	}
 
 	origHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("os.Setenv() error = %v", err)
+	}
+	defer func() {
+		_ = os.Setenv("HOME", origHome)
+	}()
 
 	loaded, err := Load()
 	if err != nil {
@@ -144,8 +152,12 @@ func TestLoadはファイルから設定を読み込む(t *testing.T) {
 func TestSaveは設定をファイルに保存する(t *testing.T) {
 	tmpDir := t.TempDir()
 	origHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("os.Setenv() error = %v", err)
+	}
+	defer func() {
+		_ = os.Setenv("HOME", origHome)
+	}()
 
 	cfg := Default()
 	cfg.WorkDuration = 45 * time.Minute
@@ -175,8 +187,12 @@ func TestSaveは設定をファイルに保存する(t *testing.T) {
 func TestLoadはファイルがない場合デフォルト値を返す(t *testing.T) {
 	tmpDir := t.TempDir()
 	origHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("os.Setenv() error = %v", err)
+	}
+	defer func() {
+		_ = os.Setenv("HOME", origHome)
+	}()
 
 	cfg, _ := Load()
 
@@ -191,14 +207,22 @@ func TestLoadはファイルがない場合デフォルト値を返す(t *testin
 func TestLoadは破損したファイルの場合デフォルト値を返す(t *testing.T) {
 	tmpDir := t.TempDir()
 	configDir := filepath.Join(tmpDir, ".config", "pomodoro")
-	os.MkdirAll(configDir, 0755)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		t.Fatalf("os.MkdirAll() error = %v", err)
+	}
 	configPath := filepath.Join(configDir, "config.json")
 
-	os.WriteFile(configPath, []byte("invalid json {{{"), 0644)
+	if err := os.WriteFile(configPath, []byte("invalid json {{{"), 0644); err != nil {
+		t.Fatalf("os.WriteFile() error = %v", err)
+	}
 
 	origHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("os.Setenv() error = %v", err)
+	}
+	defer func() {
+		_ = os.Setenv("HOME", origHome)
+	}()
 
 	cfg, _ := Load()
 
@@ -214,8 +238,12 @@ func TestLoadは破損したファイルの場合デフォルト値を返す(t *
 func TestSaveはディレクトリを自動作成する(t *testing.T) {
 	tmpDir := t.TempDir()
 	origHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("os.Setenv() error = %v", err)
+	}
+	defer func() {
+		_ = os.Setenv("HOME", origHome)
+	}()
 
 	cfg := Default()
 	if err := cfg.Save(); err != nil {

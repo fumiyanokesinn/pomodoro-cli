@@ -40,7 +40,7 @@ func InitInput() error {
 // RestoreInput はターミナルを元の状態に戻す
 func RestoreInput() {
 	if oldTermState != nil {
-		term.Restore(int(os.Stdin.Fd()), oldTermState)
+		_ = term.Restore(int(os.Stdin.Fd()), oldTermState)
 	}
 }
 
