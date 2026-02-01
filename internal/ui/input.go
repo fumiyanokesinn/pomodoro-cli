@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"os"
 
 	"golang.org/x/term"
@@ -40,7 +41,9 @@ func InitInput() error {
 // RestoreInput はターミナルを元の状態に戻す
 func RestoreInput() {
 	if oldTermState != nil {
-		_ = term.Restore(int(os.Stdin.Fd()), oldTermState)
+		if err := term.Restore(int(os.Stdin.Fd()), oldTermState); err != nil {
+			fmt.Fprintf(os.Stderr, "failed to restore terminal: %v\n", err)
+		}
 	}
 }
 

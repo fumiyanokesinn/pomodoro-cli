@@ -120,7 +120,10 @@ func TestLoadはファイルから設定を読み込む(t *testing.T) {
 		SoundEnabled:       false,
 		NotifyEnabled:      false,
 	}
-	data, _ := json.MarshalIndent(cfg, "", "  ")
+	data, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		t.Fatalf("json.MarshalIndent() error = %v", err)
+	}
 	if err := os.WriteFile(configPath, data, 0644); err != nil {
 		t.Fatalf("os.WriteFile() error = %v", err)
 	}
@@ -130,7 +133,9 @@ func TestLoadはファイルから設定を読み込む(t *testing.T) {
 		t.Fatalf("os.Setenv() error = %v", err)
 	}
 	defer func() {
-		_ = os.Setenv("HOME", origHome)
+		if err := os.Setenv("HOME", origHome); err != nil {
+			t.Errorf("os.Setenv() restore error = %v", err)
+		}
 	}()
 
 	loaded, err := Load()
@@ -156,7 +161,9 @@ func TestSaveは設定をファイルに保存する(t *testing.T) {
 		t.Fatalf("os.Setenv() error = %v", err)
 	}
 	defer func() {
-		_ = os.Setenv("HOME", origHome)
+		if err := os.Setenv("HOME", origHome); err != nil {
+			t.Errorf("os.Setenv() restore error = %v", err)
+		}
 	}()
 
 	cfg := Default()
@@ -191,7 +198,9 @@ func TestLoadはファイルがない場合デフォルト値を返す(t *testin
 		t.Fatalf("os.Setenv() error = %v", err)
 	}
 	defer func() {
-		_ = os.Setenv("HOME", origHome)
+		if err := os.Setenv("HOME", origHome); err != nil {
+			t.Errorf("os.Setenv() restore error = %v", err)
+		}
 	}()
 
 	cfg, _ := Load()
@@ -221,7 +230,9 @@ func TestLoadは破損したファイルの場合デフォルト値を返す(t *
 		t.Fatalf("os.Setenv() error = %v", err)
 	}
 	defer func() {
-		_ = os.Setenv("HOME", origHome)
+		if err := os.Setenv("HOME", origHome); err != nil {
+			t.Errorf("os.Setenv() restore error = %v", err)
+		}
 	}()
 
 	cfg, _ := Load()
@@ -242,7 +253,9 @@ func TestSaveはディレクトリを自動作成する(t *testing.T) {
 		t.Fatalf("os.Setenv() error = %v", err)
 	}
 	defer func() {
-		_ = os.Setenv("HOME", origHome)
+		if err := os.Setenv("HOME", origHome); err != nil {
+			t.Errorf("os.Setenv() restore error = %v", err)
+		}
 	}()
 
 	cfg := Default()

@@ -73,7 +73,7 @@ func TestFormatDurationTruncatesSeconds(t *testing.T) {
 // =============================================================================
 
 func TestShowInitHeaderDisplaysSetupInstructions(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowInitHeader()
 	})
 
@@ -82,7 +82,7 @@ func TestShowInitHeaderDisplaysSetupInstructions(t *testing.T) {
 }
 
 func TestShowConfigCreatedDisplaysFilePath(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowConfigCreated("/test/path/config.json")
 	})
 
@@ -95,7 +95,7 @@ func TestShowConfigCreatedDisplaysFilePath(t *testing.T) {
 // =============================================================================
 
 func TestShowUsageDisplaysAllCommandsAndOptions(t *testing.T) {
-	output := captureStderr(func() {
+	output := captureStderr(t, func() {
 		ShowUsage()
 	})
 
@@ -120,7 +120,7 @@ func TestShowUsageDisplaysAllCommandsAndOptions(t *testing.T) {
 }
 
 func TestShowUnknownCommandDisplaysErrorMessage(t *testing.T) {
-	output := captureStderr(func() {
+	output := captureStderr(t, func() {
 		ShowUnknownCommand("unknown")
 	})
 
@@ -128,7 +128,7 @@ func TestShowUnknownCommandDisplaysErrorMessage(t *testing.T) {
 }
 
 func TestShowErrorDisplaysMessage(t *testing.T) {
-	output := captureStderr(func() {
+	output := captureStderr(t, func() {
 		ShowError("test error message")
 	})
 
@@ -136,7 +136,7 @@ func TestShowErrorDisplaysMessage(t *testing.T) {
 }
 
 func TestShowVersionDisplaysVersionString(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowVersion("1.0.0")
 	})
 
@@ -159,7 +159,7 @@ func TestShowConfigDisplaysAllSettings(t *testing.T) {
 		NotifyEnabled:      false,
 	}
 
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowConfig(cfg)
 	})
 
@@ -195,7 +195,7 @@ func TestRenderTimerDisplaysSessionTypeAndTime(t *testing.T) {
 		Remaining: 24 * time.Minute,
 	}
 
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		RenderTimer(session, timer.StateRunning)
 	})
 
@@ -210,7 +210,7 @@ func TestRenderTimerShowsPauseIconWhenPaused(t *testing.T) {
 		Remaining: 3 * time.Minute,
 	}
 
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		RenderTimer(session, timer.StatePaused)
 	})
 
@@ -222,7 +222,7 @@ func TestRenderTimerShowsPauseIconWhenPaused(t *testing.T) {
 // =============================================================================
 
 func TestShowWelcomeDisplaysSettingsAndShortcuts(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowWelcome(25*time.Minute, 5*time.Minute, 15*time.Minute)
 	})
 
@@ -246,42 +246,42 @@ func TestShowWelcomeDisplaysSettingsAndShortcuts(t *testing.T) {
 // =============================================================================
 
 func TestShowSessionCompleteDisplaysWorkComplete(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowSessionComplete(timer.SessionWork)
 	})
 	assertContains(t, output, "Work session complete")
 }
 
 func TestShowSessionCompleteDisplaysBreakOver(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowSessionComplete(timer.SessionShortBreak)
 	})
 	assertContains(t, output, "Break over")
 }
 
 func TestShowStartSessionDisplaysSessionType(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowStartSession(timer.SessionWork)
 	})
 	assertContains(t, output, "Starting Work")
 }
 
 func TestShowPausedDisplaysPausedMessage(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowPaused()
 	})
 	assertContains(t, output, "Paused")
 }
 
 func TestShowResumedDisplaysResumedMessage(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowResumed()
 	})
 	assertContains(t, output, "Resumed")
 }
 
 func TestShowSkippedDisplaysSessionType(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowSkipped(timer.SessionShortBreak)
 	})
 	assertContains(t, output, "Skipped")
@@ -289,14 +289,14 @@ func TestShowSkippedDisplaysSessionType(t *testing.T) {
 }
 
 func TestShowResetDisplaysResetMessage(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowReset()
 	})
 	assertContains(t, output, "Reset")
 }
 
 func TestShowExitDisplaysExitMessage(t *testing.T) {
-	output := captureStdout(func() {
+	output := captureStdout(t, func() {
 		ShowExit()
 	})
 	assertContains(t, output, "Exiting")
@@ -443,33 +443,49 @@ func withInput(input string, fn func()) {
 	fn()
 }
 
-func captureStdout(fn func()) string {
+func captureStdout(t *testing.T, fn func()) string {
+	t.Helper()
 	oldStdout := os.Stdout
-	r, w, _ := os.Pipe()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("os.Pipe() error = %v", err)
+	}
 	os.Stdout = w
 
 	fn()
 
-	_ = w.Close()
+	if err := w.Close(); err != nil {
+		t.Errorf("w.Close() error = %v", err)
+	}
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	_, _ = buf.ReadFrom(r)
+	if _, err := buf.ReadFrom(r); err != nil {
+		t.Errorf("buf.ReadFrom() error = %v", err)
+	}
 	return buf.String()
 }
 
-func captureStderr(fn func()) string {
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
 	oldStderr := os.Stderr
-	r, w, _ := os.Pipe()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("os.Pipe() error = %v", err)
+	}
 	os.Stderr = w
 
 	fn()
 
-	_ = w.Close()
+	if err := w.Close(); err != nil {
+		t.Errorf("w.Close() error = %v", err)
+	}
 	os.Stderr = oldStderr
 
 	var buf bytes.Buffer
-	_, _ = buf.ReadFrom(r)
+	if _, err := buf.ReadFrom(r); err != nil {
+		t.Errorf("buf.ReadFrom() error = %v", err)
+	}
 	return buf.String()
 }
 
