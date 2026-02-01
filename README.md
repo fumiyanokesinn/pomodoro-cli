@@ -16,7 +16,7 @@ A simple, terminal-based Pomodoro timer written in Go.
 
 ```bash
 brew tap fumiyanokesinn/tap
-brew install pomodoro-cli
+brew install pomodoro
 ```
 
 ### From Source
