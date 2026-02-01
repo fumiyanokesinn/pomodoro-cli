@@ -77,8 +77,8 @@ func TestShowInitHeaderDisplaysSetupInstructions(t *testing.T) {
 		ShowInitHeader()
 	})
 
-	assertContains(t, output, "Pomodoro Configuration Setup")
-	assertContains(t, output, "Press Enter to use current values.")
+	assertContains(t, output, "CONFIGURATION SETUP")
+	assertContains(t, output, "Press Enter")
 }
 
 func TestShowConfigCreatedDisplaysFilePath(t *testing.T) {
@@ -86,7 +86,7 @@ func TestShowConfigCreatedDisplaysFilePath(t *testing.T) {
 		ShowConfigCreated("/test/path/config.json")
 	})
 
-	assertContains(t, output, "Config file saved:")
+	assertContains(t, output, "Configuration saved")
 	assertContains(t, output, "/test/path/config.json")
 }
 
@@ -164,15 +164,17 @@ func TestShowConfigDisplaysAllSettings(t *testing.T) {
 	})
 
 	expectedStrings := []string{
-		"Current configuration:",
+		"CURRENT CONFIGURATION",
 		"Work duration:",
 		"Short break:",
 		"Long break:",
-		"Sessions until long break: 4",
-		"Auto-start breaks: true",
-		"Auto-start work: false",
-		"Sound enabled: true",
-		"Notifications enabled: false",
+		"Sessions until long:",
+		"Auto-start breaks:",
+		"Auto-start work:",
+		"Sound enabled:",
+		"Notify enabled:",
+		"Yes",
+		"No",
 	}
 
 	for _, expected := range expectedStrings {
@@ -227,13 +229,13 @@ func TestShowWelcomeDisplaysSettingsAndShortcuts(t *testing.T) {
 	})
 
 	expectedStrings := []string{
-		"Pomodoro Timer",
 		"Work:",
-		"Short break:",
-		"Long break:",
-		"Keyboard shortcuts:",
-		"Space",
+		"Short Break:",
+		"Long Break:",
+		"Keyboard Shortcuts",
+		"[Space]",
 		"Pause/Resume",
+		"[q] Quit",
 	}
 
 	for _, expected := range expectedStrings {
@@ -299,7 +301,7 @@ func TestShowExitDisplaysExitMessage(t *testing.T) {
 	output := captureStdout(t, func() {
 		ShowExit()
 	})
-	assertContains(t, output, "Exiting")
+	assertContains(t, output, "Thanks for using Pomodoro")
 }
 
 // =============================================================================

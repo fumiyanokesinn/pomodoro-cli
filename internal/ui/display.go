@@ -69,27 +69,52 @@ func ShowVersion(version string) {
 
 // ShowConfig は設定を表示する
 func ShowConfig(cfg *config.Config) {
-	fmt.Println("Current configuration:")
-	fmt.Printf("  Work duration: %v\n", cfg.WorkDuration)
-	fmt.Printf("  Short break: %v\n", cfg.ShortBreakDuration)
-	fmt.Printf("  Long break: %v\n", cfg.LongBreakDuration)
-	fmt.Printf("  Sessions until long break: %d\n", cfg.SessionsUntilLong)
-	fmt.Printf("  Auto-start breaks: %v\n", cfg.AutoStartBreaks)
-	fmt.Printf("  Auto-start work: %v\n", cfg.AutoStartWork)
-	fmt.Printf("  Sound enabled: %v\n", cfg.SoundEnabled)
-	fmt.Printf("  Notifications enabled: %v\n", cfg.NotifyEnabled)
+	fmt.Println()
+	fmt.Println("  ┌─────────────────────────────────────────────┐")
+	fmt.Println("  │         CURRENT CONFIGURATION               │")
+	fmt.Println("  ├─────────────────────────────────────────────┤")
+	fmt.Println("  │  Timing                                     │")
+	fmt.Printf("  │    Work duration:      %-20v│\n", cfg.WorkDuration)
+	fmt.Printf("  │    Short break:        %-20v│\n", cfg.ShortBreakDuration)
+	fmt.Printf("  │    Long break:         %-20v│\n", cfg.LongBreakDuration)
+	fmt.Printf("  │    Sessions until long: %-19d│\n", cfg.SessionsUntilLong)
+	fmt.Println("  ├─────────────────────────────────────────────┤")
+	fmt.Println("  │  Behavior                                   │")
+	fmt.Printf("  │    Auto-start breaks:  %-20v│\n", boolToYesNo(cfg.AutoStartBreaks))
+	fmt.Printf("  │    Auto-start work:    %-20v│\n", boolToYesNo(cfg.AutoStartWork))
+	fmt.Println("  ├─────────────────────────────────────────────┤")
+	fmt.Println("  │  Notifications                              │")
+	fmt.Printf("  │    Sound enabled:      %-20v│\n", boolToYesNo(cfg.SoundEnabled))
+	fmt.Printf("  │    Notify enabled:     %-20v│\n", boolToYesNo(cfg.NotifyEnabled))
+	fmt.Println("  └─────────────────────────────────────────────┘")
+}
+
+// boolToYesNo はboolをYes/Noに変換する
+func boolToYesNo(b bool) string {
+	if b {
+		return "Yes"
+	}
+	return "No"
 }
 
 // ShowConfigCreated は設定ファイル作成成功メッセージを表示する
 func ShowConfigCreated(path string) {
 	fmt.Println()
-	fmt.Printf("Config file saved: %s\n", path)
+	fmt.Println("  ╔═════════════════════════════════════════════╗")
+	fmt.Println("  ║  ✓ Configuration saved successfully!        ║")
+	fmt.Println("  ╚═════════════════════════════════════════════╝")
+	fmt.Printf("  File: %s\n", path)
+	fmt.Println()
 }
 
 // ShowInitHeader はinit開始時のヘッダーを表示する
 func ShowInitHeader() {
-	fmt.Println("Pomodoro Configuration Setup")
-	fmt.Println("Press Enter to use current values.")
+	fmt.Println()
+	fmt.Println("  ╔═════════════════════════════════════════════╗")
+	fmt.Println("  ║       POMODORO CONFIGURATION SETUP          ║")
+	fmt.Println("  ╠═════════════════════════════════════════════╣")
+	fmt.Println("  ║  Press Enter to keep current values.        ║")
+	fmt.Println("  ╚═════════════════════════════════════════════╝")
 	fmt.Println()
 }
 
@@ -187,14 +212,26 @@ func RenderTimer(session *timer.Session, state timer.TimerState) {
 
 // ShowWelcome はウェルカムメッセージを表示する
 func ShowWelcome(work, shortBreak, longBreak time.Duration) {
-	printLine("🍅 Pomodoro Timer")
-	printLine(fmt.Sprintf("Work: %v | Short break: %v | Long break: %v", work, shortBreak, longBreak))
 	printLine("")
-	printLine("Keyboard shortcuts:")
-	printLine("  Space  - Pause/Resume")
-	printLine("  q      - Quit")
-	printLine("  s      - Skip")
-	printLine("  r      - Reset")
+	printLine("  ╔══════════════════════════════════════════════════════════════════════════╗")
+	printLine("  ║                                                                          ║")
+	printLine("  ║   ██████╗  ██████╗ ███╗   ███╗ ██████╗ ██████╗  ██████╗ ██████╗  ██████╗ ║")
+	printLine("  ║   ██╔══██╗██╔═══██╗████╗ ████║██╔═══██╗██╔══██╗██╔═══██╗██╔══██╗██╔═══██╗║")
+	printLine("  ║   ██████╔╝██║   ██║██╔████╔██║██║   ██║██║  ██║██║   ██║██████╔╝██║   ██║║")
+	printLine("  ║   ██╔═══╝ ██║   ██║██║╚██╔╝██║██║   ██║██║  ██║██║   ██║██╔══██╗██║   ██║║")
+	printLine("  ║   ██║     ╚██████╔╝██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝██║  ██║╚██████╔╝║")
+	printLine("  ║   ╚═╝      ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ║")
+	printLine("  ║                                                                          ║")
+	printLine("  ╚══════════════════════════════════════════════════════════════════════════╝")
+	printLine("")
+	printLine("  ┌────────────────────────────────────────────────────────────────────────┐")
+	printLine(fmt.Sprintf("  │  Work: %-10v   Short Break: %-10v   Long Break: %-10v │", work, shortBreak, longBreak))
+	printLine("  └────────────────────────────────────────────────────────────────────────┘")
+	printLine("")
+	printLine("  ┌─ Keyboard Shortcuts ───────────────────────────────────────────────────┐")
+	printLine("  │  [Space] Pause/Resume    [s] Skip    [r] Reset    [q] Quit             │")
+	printLine("  └────────────────────────────────────────────────────────────────────────┘")
+	printLine("")
 }
 
 // ShowSessionComplete はセッション完了メッセージを表示する
@@ -202,46 +239,55 @@ func ShowSessionComplete(sessionType timer.SessionType) {
 	printLine("")
 	switch sessionType {
 	case timer.SessionWork:
-		printLine("🍅 Work session complete! Time for a break.")
+		printLine("  ╔════════════════════════════════════════════╗")
+		printLine("  ║  ✓ Work session complete!                  ║")
+		printLine("  ║    Time for a well-deserved break.         ║")
+		printLine("  ╚════════════════════════════════════════════╝")
 	case timer.SessionShortBreak, timer.SessionLongBreak:
-		printLine("☕ Break over! Time to get back to work.")
+		printLine("  ╔════════════════════════════════════════════╗")
+		printLine("  ║  ✓ Break over!                             ║")
+		printLine("  ║    Time to get back to work.               ║")
+		printLine("  ╚════════════════════════════════════════════╝")
 	}
 }
 
 // ShowStartSession はセッション開始メッセージを表示する
 func ShowStartSession(sessionType timer.SessionType) {
 	printLine("")
-	printLine(fmt.Sprintf("Starting %s...", sessionType.String()))
+	printLine(fmt.Sprintf("  >>> Starting %s...", sessionType.String()))
 }
 
 // ShowPaused は一時停止メッセージを表示する
 func ShowPaused() {
 	printLine("")
-	printLine("Paused")
+	printLine("  || Paused")
 }
 
 // ShowResumed は再開メッセージを表示する
 func ShowResumed() {
 	printLine("")
-	printLine("Resumed")
+	printLine("  >> Resumed")
 }
 
 // ShowSkipped はスキップメッセージを表示する
 func ShowSkipped(nextType timer.SessionType) {
 	printLine("")
-	printLine(fmt.Sprintf("Skipped. Starting %s...", nextType.String()))
+	printLine(fmt.Sprintf("  >> Skipped. Starting %s...", nextType.String()))
 }
 
 // ShowReset はリセットメッセージを表示する
 func ShowReset() {
 	printLine("")
-	printLine("Reset")
+	printLine("  <> Reset")
 }
 
 // ShowExit は終了メッセージを表示する
 func ShowExit() {
 	printLine("")
-	printLine("Exiting...")
+	printLine("  ┌──────────────────────────────┐")
+	printLine("  │  Thanks for using Pomodoro!  │")
+	printLine("  │  See you next time!          │")
+	printLine("  └──────────────────────────────┘")
 }
 
 // ----------------------------------------------------------------------------
