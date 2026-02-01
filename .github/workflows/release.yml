@@ -43,24 +43,24 @@ jobs:
       - name: Build
         run: |
           mkdir -p dist
-          go build -ldflags="-s -w" -o dist/pomodoro-cli ./cmd/pomodoro
+          go build -ldflags="-s -w" -o dist/pomodoro ./cmd/pomodoro
 
       - name: Test binary
         run: |
-          ./dist/pomodoro-cli --version
-          ./dist/pomodoro-cli --help
-          ./dist/pomodoro-cli config
+          ./dist/pomodoro --version
+          ./dist/pomodoro --help
+          ./dist/pomodoro config
 
       - name: Create archive
         run: |
           cd dist
-          tar -czvf pomodoro-cli-${{ steps.version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz pomodoro-cli
-          rm pomodoro-cli
+          tar -czvf pomodoro-${{ steps.version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz pomodoro
+          rm pomodoro
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pomodoro-cli-${{ steps.version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: pomodoro-${{ steps.version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
           path: dist/*.tar.gz
 
   release:
