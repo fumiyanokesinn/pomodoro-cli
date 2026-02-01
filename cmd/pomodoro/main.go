@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	configcmd "pomodoro-cli/cmd/pomodoro/internal/config"
 	initcmd "pomodoro-cli/cmd/pomodoro/internal/init"
 	"pomodoro-cli/cmd/pomodoro/internal/start"
 	"pomodoro-cli/internal/config"
@@ -103,7 +104,7 @@ func main() {
 	case "start":
 		err = start.Run(cfg)
 	case "config":
-		ui.ShowConfig(cfg)
+		configcmd.Run(cfg)
 	case "init":
 		err = initcmd.Run()
 	default:
