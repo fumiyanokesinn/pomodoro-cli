@@ -11,7 +11,7 @@ import (
 	"pomodoro-cli/internal/ui"
 )
 
-const version = "1.0.0"
+const version = "0.1.0"
 
 func main() {
 	// -h, --help, -v, --version を先に処理（flag.Parse前に）
