@@ -15,7 +15,11 @@ func Run() error {
 	}
 
 	// 現在の設定を読み込む（なければデフォルト）
-	current, _ := config.Load()
+	current, err := config.Load()
+	if err != nil {
+		// ファイルがない場合はデフォルト値を使用
+		fmt.Printf("Note: %v (using defaults)\n", err)
+	}
 	defaults := config.Default()
 
 	ui.ShowInitHeader()
