@@ -1,0 +1,9 @@
+# Binary
+/pomodoro
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
